@@ -12,7 +12,14 @@ import {
   SimpleBottomNavigation,
 } from "./components";
 import { AppBar } from "./nav";
-import { Button, Card, CardContent, Stack } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Stack,
+} from "@mui/material";
 
 const errorBoundaryFallback = <div>Something went wrong</div>;
 const suspenseFallback = <div>Loading app...</div>;
@@ -24,39 +31,47 @@ export function AppInternal() {
       <Box
         sx={{
           flex: 1,
-          display: "flex",
-          justifyContent: "center",
           padding: 4,
+          mt: 6,
         }}
       >
         <Card
           sx={{
-            minWidth: 600,
             maxWidth: 600,
+            flex: 1,
           }}
         >
-          <CardContent>
-            <Stack alignItems={"center"} gap={2}>
+          <CardHeader
+            action={
               <Button
                 sx={{
-                  alignSelf: "flex-end",
-                  borderRadius: 25
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  minWidth: "unset",
                 }}
                 color="secondary"
                 variant="outlined"
               >
                 24
               </Button>
-              <Box
-                sx={{
-                  flex: 1,
-                }}
-              >
-                <CircularWithValueLabel />
-              </Box>
-              <Button variant="contained">Start Fasting</Button>
-            </Stack>
+            }
+          />
+          <CardContent
+            sx={{
+              display: "flex",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Box>
+              <CircularWithValueLabel />
+            </Box>
           </CardContent>
+          <CardActions sx={{ justifyContent: "center" }}>
+            <Button variant="contained">Start Fasting</Button>
+          </CardActions>
         </Card>
       </Box>
       <SimpleBottomNavigation />
