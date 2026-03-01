@@ -69,7 +69,7 @@ export function AppInternal() {
               <CircularWithValueLabel />
             </Box>
           </CardContent>
-          <CardActions sx={{ justifyContent: "center" }}>
+          <CardActions sx={{ py: 4, justifyContent: "center" }}>
             <Button variant="contained">Start Fasting</Button>
           </CardActions>
         </Card>
