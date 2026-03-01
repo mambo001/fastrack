@@ -1,4 +1,4 @@
-name = "example-web-todomvc-sync-cf"
+name = "fastrack"
 main = "./src/cf-worker/index.ts"
 compatibility_date = "2025-05-08"
 compatibility_flags = ["enable_request_signal", "nodejs_compat"]
@@ -12,7 +12,7 @@ tag = "v1"
 new_sqlite_classes = ["SyncBackendDO"]
 
 [env.prod]
-name = "example-web-todomvc-sync-cf"
+name = "fastrack"
 
 [[env.prod.durable_objects.bindings]]
 name = "SYNC_BACKEND_DO"
@@ -23,7 +23,7 @@ tag = "v1"
 new_sqlite_classes = ["SyncBackendDO"]
 
 [env.preview]
-name = "example-web-todomvc-sync-cf-preview"
+name = "fastrack-preview"
 
 [[env.preview.durable_objects.bindings]]
 name = "SYNC_BACKEND_DO"
@@ -34,7 +34,7 @@ tag = "v1"
 new_sqlite_classes = ["SyncBackendDO"]
 
 [env.dev]
-name = "example-web-todomvc-sync-cf-dev"
+name = "fastrack-dev"
 
 [[env.dev.durable_objects.bindings]]
 name = "SYNC_BACKEND_DO"
