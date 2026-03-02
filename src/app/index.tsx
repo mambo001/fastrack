@@ -6,10 +6,8 @@ import Box from "@mui/material/Box";
 
 import {
   CircularWithValueLabel,
-  Footer,
-  Header,
-  MainSection,
   SimpleBottomNavigation,
+  SplitButton,
 } from "./components";
 import { AppBar } from "./nav";
 import {
@@ -18,7 +16,6 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Stack,
 } from "@mui/material";
 
 const errorBoundaryFallback = <div>Something went wrong</div>;
@@ -41,22 +38,7 @@ export function AppInternal() {
             flex: 1,
           }}
         >
-          <CardHeader
-            action={
-              <Button
-                sx={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  minWidth: "unset",
-                }}
-                color="secondary"
-                variant="outlined"
-              >
-                24
-              </Button>
-            }
-          />
+          <CardHeader action={<SplitButton />} />
           <CardContent
             sx={{
               display: "flex",
