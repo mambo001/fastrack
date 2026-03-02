@@ -9,7 +9,7 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 
-import { FastingWindow } from "../../types";
+import { FastingWindow } from "../../../types";
 
 const options = [...FastingWindow.literals];
 

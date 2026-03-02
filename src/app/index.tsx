@@ -1,63 +1,35 @@
+import { HashRouter, Outlet, Route, Routes } from "react-router";
 import { StoreRegistry } from "@livestore/livestore";
 import { StoreRegistryProvider } from "@livestore/react";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Box from "@mui/material/Box";
 
-import {
-  CircularWithValueLabel,
-  SimpleBottomNavigation,
-  SplitButton,
-} from "./components";
+import { BottomNavigation } from "./components";
 import { AppBar } from "./nav";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-} from "@mui/material";
+import { Home, Profile } from "./pages";
 
 const errorBoundaryFallback = <div>Something went wrong</div>;
 const suspenseFallback = <div>Loading app...</div>;
 
-export function AppInternal() {
+function AppLayout() {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <AppBar />
-      <Box
-        sx={{
-          flex: 1,
-          padding: 4,
-          mt: 6,
-        }}
-      >
-        <Card
-          sx={{
-            maxWidth: 600,
-            flex: 1,
-          }}
-        >
-          <CardHeader action={<SplitButton />} />
-          <CardContent
-            sx={{
-              display: "flex",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Box>
-              <CircularWithValueLabel />
-            </Box>
-          </CardContent>
-          <CardActions sx={{ py: 4, justifyContent: "center" }}>
-            <Button variant="contained">Start Fasting</Button>
-          </CardActions>
-        </Card>
-      </Box>
-      <SimpleBottomNavigation />
+      <Outlet />
+      <BottomNavigation />
     </Box>
+  );
+}
+
+export function AppInternal() {
+  return (
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<Home />} />
+        <Route path="/profile/:profileId" element={<Profile />} />
+      </Route>
+    </Routes>
   );
 }
 
@@ -68,7 +40,9 @@ export function App() {
     <ErrorBoundary fallback={errorBoundaryFallback}>
       <Suspense fallback={suspenseFallback}>
         <StoreRegistryProvider storeRegistry={storeRegistry}>
-          <AppInternal />
+          <HashRouter>
+            <AppInternal />
+          </HashRouter>
         </StoreRegistryProvider>
       </Suspense>
     </ErrorBoundary>

@@ -1,7 +1,2 @@
-export * from "./header.tsx";
 export * from "./main-section.tsx";
-export * from "./footer.tsx";
-export * from "./version-badge.tsx";
 export * from "./bottom-navigation.tsx";
-export * from "./progress-bar.tsx";
-export * from "./split-button.tsx";
