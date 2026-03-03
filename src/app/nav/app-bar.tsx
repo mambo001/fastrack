@@ -33,8 +33,8 @@ export function AppBar(props: React.PropsWithChildren) {
       <CssBaseline />
       <HideOnScroll {...props}>
         <MUIAppBar>
-          {/* <Toolbar variant="dense"> */}
-          <Toolbar>
+          <Toolbar variant="dense">
+            {/* <Toolbar> */}
             <Typography variant="h6" component="div">
               fastrack
             </Typography>
