@@ -8,6 +8,56 @@ import { Stack } from "@mui/material";
 
 import { useFastContext } from "../../context";
 
+function toPercent(timeLeft: number, window: number) {
+  return Math.floor((timeLeft / (window * 3600)) * 100);
+}
+
+function useTimeLeft(end: Date | null) {
+  const [timeLeft, setTimeLeft] = useState(() =>
+    end ? (end.getTime() - Date.now()) / 1000 : 0,
+  );
+
+  useEffect(() => {
+    setTimeLeft(end ? (end.getTime() - Date.now()) / 1000 : 0);
+  }, [end]);
+
+  useEffect(() => {
+    if (!end) return;
+    const timerId = setInterval(() => {
+      const remaining = (end.getTime() - Date.now()) / 1000;
+      setTimeLeft(remaining <= 0 ? 0 : remaining);
+      if (remaining <= 0) clearInterval(timerId);
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, [end]);
+
+  return timeLeft;
+}
+
+export function CircularWithValueLabel() {
+  const { end, window, isActive } = useFastContext();
+  const timeLeft = useTimeLeft(end);
+
+  const progressValue = useMemo(() => {
+    return isActive ? toPercent(timeLeft, window) - 100 : 0;
+  }, [isActive, timeLeft, window]);
+
+  return (
+    <CircularProgressWithLabel
+      value={progressValue}
+      label={
+        isActive ? (
+          <Countdown timeLeft={timeLeft} window={window} />
+        ) : (
+          <Typography variant="h6" sx={{ color: "text.secondary" }}>
+            [time] since your last fast
+          </Typography>
+        )
+      }
+    />
+  );
+}
+
 type CircularProgressWithLabelProps = CircularProgressProps & {
   value: number;
   label: ReactNode;
@@ -26,7 +76,13 @@ function CircularProgressWithLabel({
         display: "inline-flex",
       }}
     >
-      <CircularProgress variant="determinate" size={350} value={value} />
+      <CircularProgress
+        {...props}
+        variant="determinate"
+        size={350}
+        value={value}
+        enableTrackSlot
+      />
       <Box
         sx={{
           top: 0,
@@ -45,63 +101,7 @@ function CircularProgressWithLabel({
   );
 }
 
-export function CircularWithValueLabel() {
-  const { start, end, isActive } = useFastContext();
-  const [progress, setProgress] = useState(95);
-
-  // useEffect(() => {
-  //   if (!isActive) {
-  //     setProgress(100);
-  //     return;
-  //   }
-  //   const timerId = setInterval(() => {
-  //     setProgress((durationSeconds / (16 * 60 * 60)) * 100);
-  //   }, 1000);
-  //   return () => clearInterval(timerId);
-  // }, [durationSeconds, isActive]);
-
-  return (
-    <CircularProgressWithLabel
-      value={progress}
-      label={
-        isActive ? (
-          <Countdown />
-        ) : (
-          <Typography variant="h6" sx={{ color: "text.secondary" }}>
-            [time] since your last fast
-          </Typography>
-        )
-      }
-    />
-  );
-}
-
-function Countdown() {
-  const { end, start, window } = useFastContext();
-  const [timeLeft, setTimeLeft] = useState(() =>
-    end ? (end.getTime() - Date.now()) / 1000 : 0,
-  );
-
-  useEffect(() => {
-    if (!end) return;
-
-    const timerId = setInterval(() => {
-      const remaining = (end.getTime() - Date.now()) / 1000;
-      if (remaining <= 0) {
-        clearInterval(timerId);
-        setTimeLeft(0);
-      } else {
-        setTimeLeft(remaining);
-      }
-    }, 1000);
-
-    return () => clearInterval(timerId);
-  }, [end]);
-
-  const timeRemainingPercentage = window
-    ? Math.floor((timeLeft / (window * 3600)) * 100)
-    : 0;
-
+function Countdown({ timeLeft, window }: { timeLeft: number; window: number }) {
   const formattedTimeLeft = useMemo(() => {
     const hours = Math.floor(timeLeft / 3600);
     const minutes = Math.floor((timeLeft % 3600) / 60);
@@ -109,23 +109,10 @@ function Countdown() {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }, [timeLeft]);
 
-  useEffect(() => {
-    const timerId = setInterval(() => {
-      setTimeLeft((t: number) => {
-        if (t <= 1) {
-          clearInterval(timerId);
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timerId);
-  }, []);
-
   return (
     <Stack alignItems={"center"}>
       <Typography variant="h6" sx={{ color: "text.secondary" }}>
-        Remaining ({timeRemainingPercentage}%)
+        Remaining ({toPercent(timeLeft, window)}%)
       </Typography>
       <Typography variant="h6" sx={{ color: "text.secondary" }}>
         {formattedTimeLeft}
