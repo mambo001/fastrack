@@ -1,13 +1,23 @@
-import * as React from "react";
+import { useEffect, useState, type ReactNode, useMemo } from "react";
 import CircularProgress, {
   type CircularProgressProps,
 } from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { Stack } from "@mui/material";
 
-function CircularProgressWithLabel(
-  props: CircularProgressProps & { value: number },
-) {
+import { useFastContext } from "../../context";
+
+type CircularProgressWithLabelProps = CircularProgressProps & {
+  value: number;
+  label: ReactNode;
+};
+
+function CircularProgressWithLabel({
+  value,
+  label,
+  ...props
+}: CircularProgressWithLabelProps) {
   return (
     <Box
       sx={{
@@ -29,28 +39,98 @@ function CircularProgressWithLabel(
           justifyContent: "center",
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{ color: "text.secondary" }}
-        >{`nth hours remaining`}</Typography>
+        {label}
       </Box>
     </Box>
   );
 }
 
 export function CircularWithValueLabel() {
-  const [progress, setProgress] = React.useState(95);
+  const { start, end, isActive } = useFastContext();
+  const [progress, setProgress] = useState(95);
 
-  // React.useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((prevProgress) =>
-  //       prevProgress >= 100 ? 0 : prevProgress + 10,
-  //     );
-  //   }, 800);
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
+  // useEffect(() => {
+  //   if (!isActive) {
+  //     setProgress(100);
+  //     return;
+  //   }
+  //   const timerId = setInterval(() => {
+  //     setProgress((durationSeconds / (16 * 60 * 60)) * 100);
+  //   }, 1000);
+  //   return () => clearInterval(timerId);
+  // }, [durationSeconds, isActive]);
 
-  return <CircularProgressWithLabel value={progress} />;
+  return (
+    <CircularProgressWithLabel
+      value={progress}
+      label={
+        isActive ? (
+          <Countdown />
+        ) : (
+          <Typography variant="h6" sx={{ color: "text.secondary" }}>
+            [time] since your last fast
+          </Typography>
+        )
+      }
+    />
+  );
+}
+
+function Countdown() {
+  const { end, start, window } = useFastContext();
+  const [timeLeft, setTimeLeft] = useState(() =>
+    end ? (end.getTime() - Date.now()) / 1000 : 0,
+  );
+
+  useEffect(() => {
+    if (!end) return;
+
+    const timerId = setInterval(() => {
+      const remaining = (end.getTime() - Date.now()) / 1000;
+      if (remaining <= 0) {
+        clearInterval(timerId);
+        setTimeLeft(0);
+      } else {
+        setTimeLeft(remaining);
+      }
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [end]);
+
+  const timeRemainingPercentage = window
+    ? Math.floor((timeLeft / (window * 3600)) * 100)
+    : 0;
+
+  const formattedTimeLeft = useMemo(() => {
+    const hours = Math.floor(timeLeft / 3600);
+    const minutes = Math.floor((timeLeft % 3600) / 60);
+    const seconds = Math.floor(timeLeft % 60);
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }, [timeLeft]);
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setTimeLeft((t: number) => {
+        console.log("tick", t);
+        if (t <= 1) {
+          clearInterval(timerId);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, []);
+
+  return (
+    <Stack alignItems={"center"}>
+      <Typography variant="h6" sx={{ color: "text.secondary" }}>
+        Remaining ({timeRemainingPercentage}%)
+      </Typography>
+      <Typography variant="h6" sx={{ color: "text.secondary" }}>
+        {formattedTimeLeft}
+      </Typography>
+    </Stack>
+  );
 }

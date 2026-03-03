@@ -9,6 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { format } from "date-fns";
 
 import { SplitButton } from "./split-button";
 import { CircularWithValueLabel } from "./progress-bar";
@@ -16,6 +17,15 @@ import { useFastContext } from "../../context";
 
 export function Home() {
   const fastContext = useFastContext();
+
+  const handleStartFastingClick = () => {
+    fastContext.startSession();
+  };
+
+  const handleStopFastingClick = () => {
+    fastContext.endSession();
+  };
+
   return (
     <Container
       sx={{
@@ -31,6 +41,20 @@ export function Home() {
     >
       <Stack marginTop={6} paddingBottom={4} gap={2}>
         <Typography>{JSON.stringify(fastContext || "", null, 2)}</Typography>
+        <Typography>
+          {JSON.stringify(
+            {
+              startHours: fastContext.start
+                ? format(fastContext.start || new Date(), "MMMM dd, HH:mm:ss")
+                : "NA",
+              endHours: fastContext.end
+                ? format(fastContext.end || new Date(), "MMMM dd, HH:mm:ss")
+                : "NA",
+            },
+            null,
+            2,
+          )}
+        </Typography>
         <Card
           sx={{
             maxWidth: 600,
@@ -51,7 +75,19 @@ export function Home() {
             </Box>
           </CardContent>
           <CardActions sx={{ py: 4, justifyContent: "center" }}>
-            <Button variant="contained">Start Fasting</Button>
+            {!fastContext.isActive ? (
+              <Button variant="contained" onClick={handleStartFastingClick}>
+                Start Fasting
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleStopFastingClick}
+              >
+                Stop Fasting
+              </Button>
+            )}
           </CardActions>
         </Card>
       </Stack>

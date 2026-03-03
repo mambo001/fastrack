@@ -15,21 +15,18 @@ import { useFastContext } from "../../context";
 const options = [...FastingWindow.literals];
 
 export function SplitButton() {
-  const { window, setWindow } = useFastContext();
+  const { window, setWindow, isActive } = useFastContext();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(
     options.indexOf(window) || 0,
   );
 
-  const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex]}`);
-  };
-
   const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    _: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
   ) => {
+    console.log(`You clicked ${options[index]}`);
     setSelectedIndex(index);
     setWindow(options[index] as FastingWindow);
     setOpen(false);
@@ -53,11 +50,12 @@ export function SplitButton() {
   return (
     <React.Fragment>
       <ButtonGroup
+        disabled={isActive}
         variant="outlined"
         ref={anchorRef}
         aria-label="Button group with a nested menu"
       >
-        <Button onClick={handleClick}>{options[selectedIndex]}</Button>
+        <Button onClick={handleToggle}>{options[selectedIndex]}</Button>
         <Button
           size="small"
           aria-controls={open ? "split-button-menu" : undefined}
@@ -91,7 +89,6 @@ export function SplitButton() {
                   {options.map((option, index) => (
                     <MenuItem
                       key={option}
-                      // disabled={index === 2}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >
