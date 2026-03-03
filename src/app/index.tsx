@@ -9,6 +9,8 @@ import { BottomNavigation } from "./components";
 import { AppBar } from "./nav";
 import { Home, Profile } from "./pages";
 import { FastProvider } from "./context";
+import { ThemeProvider } from "@mui/material";
+import { appTheme } from "./theme";
 
 const errorBoundaryFallback = <div>Something went wrong</div>;
 const suspenseFallback = <div>Loading app...</div>;
@@ -43,7 +45,9 @@ export function App() {
         <StoreRegistryProvider storeRegistry={storeRegistry}>
           <HashRouter>
             <FastProvider>
-              <AppInternal />
+              <ThemeProvider theme={appTheme}>
+                <AppInternal />
+              </ThemeProvider>
             </FastProvider>
           </HashRouter>
         </StoreRegistryProvider>
