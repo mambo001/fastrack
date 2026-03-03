@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import { BottomNavigation } from "./components";
 import { AppBar } from "./nav";
 import { Home, Profile } from "./pages";
+import { FastProvider } from "./context";
 
 const errorBoundaryFallback = <div>Something went wrong</div>;
 const suspenseFallback = <div>Loading app...</div>;
@@ -41,7 +42,9 @@ export function App() {
       <Suspense fallback={suspenseFallback}>
         <StoreRegistryProvider storeRegistry={storeRegistry}>
           <HashRouter>
-            <AppInternal />
+            <FastProvider>
+              <AppInternal />
+            </FastProvider>
           </HashRouter>
         </StoreRegistryProvider>
       </Suspense>
