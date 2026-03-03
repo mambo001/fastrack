@@ -57,10 +57,7 @@ export function FastProvider(props: PropsWithChildren) {
 
   const endSession = () => {
     // TODO: implement end session logic
-    // const now = new Date();
-    // const milliseconds = selectedWindow * 3600000;
-    // const endDate = addMilliseconds(now, milliseconds);
-    setFastSession(defaultFastSession);
+    setFastSession({ ...defaultFastSession, window: fastSession.window });
   };
 
   return (
