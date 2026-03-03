@@ -16,6 +16,7 @@
     "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.8",
     "@overengineering/fps-meter": "0.2.4",
+    "date-fns": "^4.1.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-error-boundary": "6.0.0",
