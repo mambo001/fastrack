@@ -7,12 +7,15 @@ import {
   Box,
   Container,
   Stack,
+  Typography,
 } from "@mui/material";
 
 import { SplitButton } from "./split-button";
 import { CircularWithValueLabel } from "./progress-bar";
+import { useFastContext } from "../../context";
 
 export function Home() {
+  const fastContext = useFastContext();
   return (
     <Container
       sx={{
@@ -27,6 +30,7 @@ export function Home() {
       }}
     >
       <Stack marginTop={6} paddingBottom={4} gap={2}>
+        <Typography>{JSON.stringify(fastContext || "", null, 2)}</Typography>
         <Card
           sx={{
             maxWidth: 600,

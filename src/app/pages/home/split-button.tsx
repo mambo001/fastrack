@@ -10,13 +10,17 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 
 import { FastingWindow } from "../../../types";
+import { useFastContext } from "../../context";
 
 const options = [...FastingWindow.literals];
 
 export function SplitButton() {
+  const { window, setWindow } = useFastContext();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [selectedIndex, setSelectedIndex] = React.useState(
+    options.indexOf(window) || 0,
+  );
 
   const handleClick = () => {
     console.info(`You clicked ${options[selectedIndex]}`);
@@ -27,6 +31,7 @@ export function SplitButton() {
     index: number,
   ) => {
     setSelectedIndex(index);
+    setWindow(options[index] as FastingWindow);
     setOpen(false);
   };
 
