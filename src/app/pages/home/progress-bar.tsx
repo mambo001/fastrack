@@ -16,7 +16,7 @@ function CircularProgressWithLabel(
         display: "inline-flex",
       }}
     >
-      <CircularProgress variant="determinate" {...props} size={300} />
+      <CircularProgress variant="determinate" {...props} size={350} />
       <Box
         sx={{
           top: 0,
@@ -30,28 +30,27 @@ function CircularProgressWithLabel(
         }}
       >
         <Typography
-          variant="caption"
-          component="div"
+          variant="h6"
           sx={{ color: "text.secondary" }}
-        >{`${Math.round(props.value)}%`}</Typography>
+        >{`nth hours remaining`}</Typography>
       </Box>
     </Box>
   );
 }
 
 export function CircularWithValueLabel() {
-  const [progress, setProgress] = React.useState(10);
+  const [progress, setProgress] = React.useState(95);
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 0 : prevProgress + 10,
-      );
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setProgress((prevProgress) =>
+  //       prevProgress >= 100 ? 0 : prevProgress + 10,
+  //     );
+  //   }, 800);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
   return <CircularProgressWithLabel value={progress} />;
 }

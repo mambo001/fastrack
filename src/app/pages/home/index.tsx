@@ -31,13 +31,11 @@ export function Home() {
           sx={{
             maxWidth: 600,
             flex: 1,
-            backgroundColor: "blue",
           }}
         >
           <CardHeader action={<SplitButton />} />
           <CardContent
             sx={{
-              backgroundColor: "red",
               display: "flex",
               flex: 1,
               justifyContent: "center",
