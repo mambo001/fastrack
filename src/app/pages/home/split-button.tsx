@@ -26,7 +26,6 @@ export function SplitButton() {
     _: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
   ) => {
-    console.log(`You clicked ${options[index]}`);
     setSelectedIndex(index);
     setWindow(options[index] as FastingWindow);
     setOpen(false);

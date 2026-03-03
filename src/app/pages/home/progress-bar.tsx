@@ -26,7 +26,7 @@ function CircularProgressWithLabel({
         display: "inline-flex",
       }}
     >
-      <CircularProgress variant="determinate" {...props} size={350} />
+      <CircularProgress variant="determinate" size={350} value={value} />
       <Box
         sx={{
           top: 0,
@@ -112,7 +112,6 @@ function Countdown() {
   useEffect(() => {
     const timerId = setInterval(() => {
       setTimeLeft((t: number) => {
-        console.log("tick", t);
         if (t <= 1) {
           clearInterval(timerId);
           return 0;
