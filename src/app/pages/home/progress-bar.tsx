@@ -5,11 +5,16 @@ import CircularProgress, {
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Stack } from "@mui/material";
+import { formatDistance } from "date-fns";
 
-import { useFastContext } from "../../context";
+import { useFastContext, type Session } from "../../context";
 
 function toPercent(timeLeft: number, window: number) {
   return Math.floor((timeLeft / (window * 3600)) * 100);
+}
+
+function formatDateDistance(date: Date | null) {
+  return date ? formatDistance(new Date(), date) : "";
 }
 
 function useTimeLeft(end: Date | null) {
@@ -35,7 +40,7 @@ function useTimeLeft(end: Date | null) {
 }
 
 export function CircularWithValueLabel() {
-  const { currentSession } = useFastContext();
+  const { currentSession, sessions } = useFastContext();
   const { end, window, isActive } = currentSession;
   const timeLeft = useTimeLeft(end);
 
@@ -50,9 +55,7 @@ export function CircularWithValueLabel() {
         isActive ? (
           <Countdown timeLeft={timeLeft} window={window} />
         ) : (
-          <Typography variant="h6" sx={{ color: "text.secondary" }}>
-            [time] since your last fast
-          </Typography>
+          <ProgressBarInactiveSessionLabel sessions={sessions} />
         )
       }
     />
@@ -112,12 +115,56 @@ function Countdown({ timeLeft, window }: { timeLeft: number; window: number }) {
 
   return (
     <Stack alignItems={"center"}>
-      <Typography variant="h6" sx={{ color: "text.secondary" }}>
+      <Typography variant="body1" sx={{ color: "text.secondary" }}>
         Remaining ({toPercent(timeLeft, window)}%)
       </Typography>
-      <Typography variant="h6" sx={{ color: "text.secondary" }}>
-        {formattedTimeLeft}
-      </Typography>
+      <Typography variant="h5">{formattedTimeLeft}</Typography>
     </Stack>
   );
+}
+
+function ProgressBarInactiveSessionLabel({
+  sessions,
+}: {
+  sessions: Session[];
+}) {
+  if (sessions.length <= 0) {
+    return (
+      <Typography
+        variant="body1"
+        sx={{
+          color: "text.secondary",
+          maxWidth: 250,
+          textAlign: "center",
+        }}
+      >
+        Click <strong>Start Fasting</strong> to begin your first fast!
+      </Typography>
+    );
+  }
+  if (sessions.length > 0) {
+    return (
+      <Stack gap={1}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            maxWidth: 250,
+            textAlign: "center",
+          }}
+        >
+          Time since last fast
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            maxWidth: 250,
+            textAlign: "center",
+          }}
+        >
+          {formatDateDistance(sessions[sessions.length - 1]?.endedAt!)}
+        </Typography>
+      </Stack>
+    );
+  }
 }

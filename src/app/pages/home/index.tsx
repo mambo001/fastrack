@@ -7,11 +7,21 @@ import {
   Box,
   Container,
   Stack,
+  Typography,
 } from "@mui/material";
 
 import { SplitButton } from "./split-button";
 import { CircularWithValueLabel } from "./progress-bar";
 import { useFastContext } from "../../context";
+import { addHours, format } from "date-fns";
+
+function endDateFromWindow(date: Date | null, window: number) {
+  return date && addHours(date, window);
+}
+
+function formatNullableDate(date: Date | null) {
+  return date ? format(date, "E, HH:mm a") : "";
+}
 
 export function Home() {
   const { currentSession } = useFastContext();
@@ -53,9 +63,36 @@ export function Home() {
               alignItems: "center",
             }}
           >
-            <Box>
-              <CircularWithValueLabel />
-            </Box>
+            <Stack gap={1}>
+              <Box>
+                <CircularWithValueLabel />
+              </Box>
+              {currentSession.isActive && (
+                <Stack direction="row" gap={4} justifyContent="space-around">
+                  <Stack>
+                    <Typography variant="caption" align="center">
+                      Started
+                    </Typography>
+                    <Typography variant="body2" align="center" fontWeight={500}>
+                      {formatNullableDate(currentSession.start)}
+                    </Typography>
+                  </Stack>
+                  <Stack>
+                    <Typography variant="caption" align="center">
+                      Goal
+                    </Typography>
+                    <Typography variant="body2" align="center" fontWeight={500}>
+                      {formatNullableDate(
+                        endDateFromWindow(
+                          currentSession.start,
+                          currentSession.window,
+                        ),
+                      )}
+                    </Typography>
+                  </Stack>
+                </Stack>
+              )}
+            </Stack>
           </CardContent>
           <CardActions sx={{ py: 4, justifyContent: "center" }}>
             {!currentSession.isActive ? (

@@ -20,7 +20,7 @@ interface FastSession {
   endSession: () => void;
 }
 
-interface Session {
+export interface Session {
   readonly id: string;
   readonly window: string;
   readonly startedAt: Date | null;
