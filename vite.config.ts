@@ -17,4 +17,9 @@ export default defineConfig({
     react(),
     livestoreDevtoolsPlugin({ schemaPath: "./src/livestore/schema.ts" }),
   ],
+  build: {
+    outDir: "dist",
+    assetsDir: "",
+  },
+  base: "/fastrack/",
 });
