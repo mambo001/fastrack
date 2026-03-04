@@ -1,6 +1,11 @@
-import { Container, Stack } from "@mui/material";
+import { Card, CardContent, Container, Stack, Typography } from "@mui/material";
+
+import { sessions$, useAppStore } from "../../../livestore";
+import { FastingSessionsTable } from "./table";
 
 export function Profile() {
+  const store = useAppStore();
+  const sessions = store.useQuery(sessions$);
   return (
     <Container
       sx={{
@@ -15,7 +20,8 @@ export function Profile() {
       }}
     >
       <Stack marginTop={6} paddingBottom={4} gap={2}>
-        <div>Profile</div>
+        <Typography variant="h6">Recent sessions</Typography>
+        <FastingSessionsTable />
       </Stack>
     </Container>
   );
