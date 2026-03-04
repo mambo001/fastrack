@@ -44,6 +44,8 @@
     "deploy": "pnpm run build && bunx wrangler deploy",
     "dev": "vite --force",
     "preview": "vite preview",
-    "test": "playwright test"
+    "test": "playwright test",
+    "deploy:gh-pages": "git subtree push --prefix dist origin gh-pages",
+    "rebuild:gh-pages": "bun run build && git add . && git commit -m 'rebuild gh pages' && bun run deploy:gh-pages"
   }
 }
