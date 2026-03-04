@@ -22,6 +22,6 @@ export default defineConfig({
     assetsDir: "",
   },
   // base: "/",
-  // base: "/fastrack/",
-  base: "/dist/client",
+  base: "/fastrack/",
+  // base: "/dist/client",
 });
