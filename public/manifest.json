@@ -4,7 +4,7 @@
   "description": "A simple app to track fast sessions",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#F2EFE7",
   "theme_color": "#006A71ff",
   "icons": [
     {
