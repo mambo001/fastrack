@@ -21,5 +21,7 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "",
   },
-  base: "/fastrack/",
+  // base: "/",
+  // base: "/fastrack/",
+  base: "/dist/client",
 });
