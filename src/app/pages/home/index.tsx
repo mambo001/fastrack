@@ -14,14 +14,14 @@ import { CircularWithValueLabel } from "./progress-bar";
 import { useFastContext } from "../../context";
 
 export function Home() {
-  const fastContext = useFastContext();
+  const { currentSession } = useFastContext();
 
   const handleStartFastingClick = () => {
-    fastContext.startSession();
+    currentSession.startSession();
   };
 
   const handleStopFastingClick = () => {
-    fastContext.endSession();
+    currentSession.endSession();
   };
 
   return (
@@ -58,7 +58,7 @@ export function Home() {
             </Box>
           </CardContent>
           <CardActions sx={{ py: 4, justifyContent: "center" }}>
-            {!fastContext.isActive ? (
+            {!currentSession.isActive ? (
               <Button variant="contained" onClick={handleStartFastingClick}>
                 Start Fasting
               </Button>

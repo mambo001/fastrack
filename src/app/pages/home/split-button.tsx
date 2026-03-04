@@ -15,7 +15,8 @@ import { useFastContext } from "../../context";
 const options = [...FastingWindow.literals];
 
 export function SplitButton() {
-  const { window, setWindow, isActive } = useFastContext();
+  const { currentSession } = useFastContext();
+  const { window, isActive, setWindow } = currentSession;
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(

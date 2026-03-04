@@ -35,7 +35,8 @@ function useTimeLeft(end: Date | null) {
 }
 
 export function CircularWithValueLabel() {
-  const { end, window, isActive } = useFastContext();
+  const { currentSession } = useFastContext();
+  const { end, window, isActive } = currentSession;
   const timeLeft = useTimeLeft(end);
 
   const progressValue = useMemo(() => {

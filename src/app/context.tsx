@@ -7,6 +7,7 @@ import {
 import { addMilliseconds } from "date-fns";
 
 import { FastingWindow } from "../types";
+import { useAppStore, events, sessions$, schema } from "../livestore";
 
 interface FastSession {
   window: FastingWindow;
@@ -16,6 +17,13 @@ interface FastSession {
   setWindow: (window: FastingWindow) => void;
   startSession: () => void;
   endSession: () => void;
+}
+
+interface Session {
+  readonly id: string;
+  readonly window: string;
+  readonly startedAt: Date | null;
+  readonly endedAt: Date | null;
 }
 
 const defaultFastSession = {
@@ -28,12 +36,23 @@ const defaultFastSession = {
   endSession: () => {},
 };
 
-const FastContext = createContext<FastSession>(defaultFastSession);
+interface FastContext {
+  currentSession: FastSession;
+  sessions: Session[];
+}
+
+const FastContext = createContext<FastContext>({
+  sessions: [],
+  currentSession: defaultFastSession,
+});
 
 export function FastProvider(props: PropsWithChildren) {
   const [fastSession, setFastSession] = useState<FastSession>({
     ...defaultFastSession,
   });
+  const store = useAppStore();
+
+  const sessions = store.useQuery(sessions$);
 
   const handleSetWindow = (window: FastingWindow) => {
     setFastSession({
@@ -48,26 +67,51 @@ export function FastProvider(props: PropsWithChildren) {
     const now = new Date();
     const milliseconds = fastSession.window * 3600000;
     const endDate = addMilliseconds(now, milliseconds);
+
     setFastSession({
       ...fastSession,
       start: now,
       end: endDate,
     });
+
+    store.commit(
+      events.sessionStarted({
+        id: crypto.randomUUID(),
+        startedAt: now,
+        window: String(fastSession.window),
+      }),
+    );
   };
 
   const endSession = () => {
-    // TODO: implement end session logic
+    const now = new Date();
+
     setFastSession({ ...defaultFastSession, window: fastSession.window });
+
+    store.commit(
+      events.sessionEnded({
+        id: crypto.randomUUID(),
+        endedAt: now,
+      }),
+    );
   };
 
   return (
     <FastContext.Provider
       value={{
-        ...fastSession,
-        setWindow: handleSetWindow,
-        isActive,
-        startSession,
-        endSession,
+        sessions: sessions.map((session) => ({
+          id: session.id,
+          window: session.window,
+          startedAt: session.startedAt,
+          endedAt: session.endedAt,
+        })),
+        currentSession: {
+          ...fastSession,
+          setWindow: handleSetWindow,
+          isActive,
+          startSession,
+          endSession,
+        },
       }}
     >
       {props.children}
