@@ -4,21 +4,19 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import TripOriginOutlinedIcon from "@mui/icons-material/TripOriginOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { useNavigate, useLocation } from "react-router";
-import { useQuery } from "@livestore/react";
 
-// import { queries } from "../store";
+import { useAppStore } from "../../livestore";
 
 export function BottomNavigation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  // const { profileId } = useQuery(queries.profile());
-  const profileId = "123";
+  const { clientId } = useAppStore();
 
   const value = pathname === "/" ? 0 : 1;
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     if (newValue === 0) navigate("/");
-    if (newValue === 1) navigate(`/profile/${profileId}`);
+    if (newValue === 1) navigate(`/profile/${clientId}`);
   };
 
   return (
