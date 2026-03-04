@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 
 import { livestoreDevtoolsPlugin } from "@livestore/devtools-vite";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
     port: process.env.PORT ? Number(process.env.PORT) : 60_001,
     fs: { strict: false },
@@ -21,5 +21,6 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "",
   },
-  base: "/fastrack/",
-});
+  // base: "/fastrack/",
+  base: mode === "development" ? "/" : "/fastrack/",
+}));
