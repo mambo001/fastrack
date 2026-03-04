@@ -10,6 +10,7 @@ import { FastingWindow } from "../types";
 import { useAppStore, events, sessions$, schema } from "../livestore";
 
 interface FastSession {
+  id: string;
   window: FastingWindow;
   start: Date | null;
   end: Date | null;
@@ -27,6 +28,7 @@ interface Session {
 }
 
 const defaultFastSession = {
+  id: "0",
   window: FastingWindow.literals[0],
   start: null,
   end: null,
@@ -67,16 +69,18 @@ export function FastProvider(props: PropsWithChildren) {
     const now = new Date();
     const milliseconds = fastSession.window * 3600000;
     const endDate = addMilliseconds(now, milliseconds);
+    const id = crypto.randomUUID();
 
     setFastSession({
       ...fastSession,
+      id,
       start: now,
       end: endDate,
     });
 
     store.commit(
       events.sessionStarted({
-        id: crypto.randomUUID(),
+        id,
         startedAt: now,
         window: String(fastSession.window),
       }),
@@ -90,7 +94,7 @@ export function FastProvider(props: PropsWithChildren) {
 
     store.commit(
       events.sessionEnded({
-        id: crypto.randomUUID(),
+        id: fastSession.id,
         endedAt: now,
       }),
     );
