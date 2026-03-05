@@ -17,7 +17,7 @@ const suspenseFallback = <div>Loading app...</div>;
 
 function AppLayout() {
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ minHeight: "100svh", display: "flex", flexDirection: "column" }}>
       <AppBar />
       <Outlet />
       <BottomNavigation />
