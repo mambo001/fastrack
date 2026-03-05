@@ -1,4 +1,5 @@
-import * as React from "react";
+// import * as React from "react";
+import { useState, useRef, Fragment, type MouseEvent } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -17,17 +18,14 @@ const options = [...FastingWindow.literals];
 export function SplitButton() {
   const { currentSession } = useFastContext();
   const { window, isActive, setWindow } = currentSession;
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef<HTMLDivElement>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(
-    options.indexOf(window) || 0,
-  );
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const selectedIndex = options.indexOf(window);
 
   const handleMenuItemClick = (
-    _: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    _: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
     index: number,
   ) => {
-    setSelectedIndex(index);
     setWindow(options[index] as FastingWindow);
     setOpen(false);
   };
@@ -48,7 +46,7 @@ export function SplitButton() {
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <ButtonGroup
         disabled={isActive}
         variant="outlined"
@@ -101,6 +99,6 @@ export function SplitButton() {
           </Grow>
         )}
       </Popper>
-    </React.Fragment>
+    </Fragment>
   );
 }

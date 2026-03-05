@@ -47,9 +47,10 @@ export function Home() {
         },
       }}
     >
-      <Stack marginTop={6} paddingBottom={4} gap={2}>
+      <Stack marginTop={6} paddingBottom={4} gap={2} alignItems={"center"}>
         <Card
           sx={{
+            width: "100%",
             maxWidth: 600,
             flex: 1,
           }}

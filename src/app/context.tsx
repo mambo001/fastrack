@@ -1,13 +1,21 @@
 import {
   createContext,
   useContext,
+  useMemo,
   useState,
   type PropsWithChildren,
 } from "react";
 import { addMilliseconds } from "date-fns";
 
 import { FastingWindow } from "../types";
-import { useAppStore, events, sessions$, schema } from "../livestore";
+import {
+  useAppStore,
+  events,
+  sessions$,
+  lastActiveSession$,
+} from "../livestore";
+
+const HOUR_IN_MS = 3_600_000;
 
 interface FastSession {
   id: string;
@@ -27,75 +35,80 @@ export interface Session {
   readonly endedAt: Date | null;
 }
 
-const defaultFastSession = {
-  id: "0",
-  window: FastingWindow.literals[0],
-  start: null,
-  end: null,
-  isActive: false,
-  setWindow: (window: FastingWindow) => {},
-  startSession: () => {},
-  endSession: () => {},
-};
-
 interface FastContext {
   currentSession: FastSession;
-  sessions: Session[];
+  sessions: readonly Session[];
 }
 
 const FastContext = createContext<FastContext>({
   sessions: [],
-  currentSession: defaultFastSession,
+  currentSession: {
+    id: "0",
+    window: FastingWindow.literals[0],
+    start: null,
+    end: null,
+    isActive: false,
+    setWindow: (window: FastingWindow) => {},
+    startSession: () => {},
+    endSession: () => {},
+  },
 });
 
 export function FastProvider(props: PropsWithChildren) {
-  const [fastSession, setFastSession] = useState<FastSession>({
-    ...defaultFastSession,
-  });
   const store = useAppStore();
-
   const sessions = store.useQuery(sessions$);
+  const [lastActiveSession] = store.useQuery(lastActiveSession$);
+
+  const [selectedWindow, setSelectedWindow] = useState<FastingWindow>(
+    FastingWindow.literals[0],
+  );
+
+  const currentSession = useMemo(() => {
+    if (!lastActiveSession?.startedAt || lastActiveSession.endedAt) {
+      return {
+        id: "0",
+        window: selectedWindow,
+        start: null,
+        end: null,
+        isActive: false,
+      };
+    }
+
+    const window = Number(lastActiveSession.window) as FastingWindow;
+    const start = new Date(lastActiveSession.startedAt);
+    const end = addMilliseconds(start, window * HOUR_IN_MS);
+
+    return {
+      id: lastActiveSession.id,
+      window,
+      start,
+      end,
+      isActive: true,
+    };
+  }, [lastActiveSession, selectedWindow]);
 
   const handleSetWindow = (window: FastingWindow) => {
-    setFastSession({
-      ...fastSession,
-      window,
-    });
+    setSelectedWindow(window);
   };
-
-  const isActive = fastSession.start !== null;
 
   const startSession = () => {
     const now = new Date();
-    const milliseconds = fastSession.window * 3600000;
-    const endDate = addMilliseconds(now, milliseconds);
     const id = crypto.randomUUID();
-
-    setFastSession({
-      ...fastSession,
-      id,
-      start: now,
-      end: endDate,
-    });
 
     store.commit(
       events.sessionStarted({
         id,
         startedAt: now,
-        window: String(fastSession.window),
+        window: String(selectedWindow),
       }),
     );
   };
 
   const endSession = () => {
-    const now = new Date();
-
-    setFastSession({ ...defaultFastSession, window: fastSession.window });
-
     store.commit(
       events.sessionEnded({
-        id: fastSession.id,
-        endedAt: now,
+        id: currentSession.id,
+        endedAt: new Date(),
       }),
     );
   };
@@ -103,16 +116,10 @@ export function FastProvider(props: PropsWithChildren) {
   return (
     <FastContext.Provider
       value={{
-        sessions: sessions.map((session) => ({
-          id: session.id,
-          window: session.window,
-          startedAt: session.startedAt,
-          endedAt: session.endedAt,
-        })),
+        sessions,
         currentSession: {
-          ...fastSession,
+          ...currentSession,
           setWindow: handleSetWindow,
-          isActive,
           startSession,
           endSession,
         },

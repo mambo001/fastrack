@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode, useMemo } from "react";
+import { useEffect, useState, useMemo, type ReactNode } from "react";
 import CircularProgress, {
   type CircularProgressProps,
 } from "@mui/material/CircularProgress";
@@ -23,11 +23,13 @@ function useTimeLeft(end: Date | null) {
   );
 
   useEffect(() => {
-    setTimeLeft(end ? (end.getTime() - Date.now()) / 1000 : 0);
-  }, [end]);
+    if (!end) {
+      setTimeLeft(0);
+      return;
+    }
 
-  useEffect(() => {
-    if (!end) return;
+    setTimeLeft((end.getTime() - Date.now()) / 1000);
+
     const timerId = setInterval(() => {
       const remaining = (end.getTime() - Date.now()) / 1000;
       setTimeLeft(remaining <= 0 ? 0 : remaining);
@@ -42,6 +44,7 @@ function useTimeLeft(end: Date | null) {
 export function CircularWithValueLabel() {
   const { currentSession, sessions } = useFastContext();
   const { end, window, isActive } = currentSession;
+
   const timeLeft = useTimeLeft(end);
 
   const progressValue = useMemo(() => {
@@ -106,12 +109,10 @@ function CircularProgressWithLabel({
 }
 
 function Countdown({ timeLeft, window }: { timeLeft: number; window: number }) {
-  const formattedTimeLeft = useMemo(() => {
-    const hours = Math.floor(timeLeft / 3600);
-    const minutes = Math.floor((timeLeft % 3600) / 60);
-    const seconds = Math.floor(timeLeft % 60);
-    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-  }, [timeLeft]);
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = Math.floor(timeLeft % 60);
+  const formattedTimeLeft = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
   return (
     <Stack alignItems={"center"}>
@@ -126,7 +127,7 @@ function Countdown({ timeLeft, window }: { timeLeft: number; window: number }) {
 function ProgressBarInactiveSessionLabel({
   sessions,
 }: {
-  sessions: Session[];
+  sessions: readonly Session[];
 }) {
   if (sessions.length <= 0) {
     return (
@@ -142,29 +143,27 @@ function ProgressBarInactiveSessionLabel({
       </Typography>
     );
   }
-  if (sessions.length > 0) {
-    return (
-      <Stack gap={1}>
-        <Typography
-          variant="body2"
-          sx={{
-            color: "text.secondary",
-            maxWidth: 250,
-            textAlign: "center",
-          }}
-        >
-          Time since last fast
-        </Typography>
-        <Typography
-          variant="h6"
-          sx={{
-            maxWidth: 250,
-            textAlign: "center",
-          }}
-        >
-          {formatDateDistance(sessions[sessions.length - 1]?.endedAt!)}
-        </Typography>
-      </Stack>
-    );
-  }
+  return (
+    <Stack gap={1}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          maxWidth: 250,
+          textAlign: "center",
+        }}
+      >
+        Time since last fast
+      </Typography>
+      <Typography
+        variant="h6"
+        sx={{
+          maxWidth: 250,
+          textAlign: "center",
+        }}
+      >
+        {formatDateDistance(sessions[sessions.length - 1]?.endedAt ?? null)}
+      </Typography>
+    </Stack>
+  );
 }
