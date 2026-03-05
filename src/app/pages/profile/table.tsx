@@ -5,12 +5,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { format } from "date-fns";
+import {
+  format,
+  formatDistanceStrict,
+  formatDistanceToNowStrict,
+} from "date-fns";
 
 import { useFastContext } from "../../context";
 
 const renderFormattedDate = (date: Date | null) => {
-  return date ? format(new Date(date), "yyyy-MM-dd HH:mm:ss") : "";
+  return date ? format(new Date(date), "MMM, dd HH:mm aa") : "";
 };
 
 const camelCaseToTitleCase = (str: string) => {
@@ -24,25 +28,49 @@ export function FastingSessionsTable() {
     if (sessions.length === 0) return null;
 
     const [_, ...remainingKeys] = Object.keys(sessions[0]!);
-    return remainingKeys.map((key) => (
-      <TableCell key={key}>{camelCaseToTitleCase(key)}</TableCell>
-    ));
+    return remainingKeys
+      .map((key) => {
+        if (key === "window")
+          return (
+            <TableCell size="small" key={key}>
+              {/* {camelCaseToTitleCase(key)}(hrs) */}
+              Goal(hrs)
+            </TableCell>
+          );
+
+        return <TableCell key={key}>{camelCaseToTitleCase(key)}</TableCell>;
+      })
+      .concat(<TableCell key="duration">Duration</TableCell>);
   };
   const renderTableBodyRows = () => {
     return (
       sessions.length > 0 &&
       sessions.map((session) => (
         <TableRow key={session.id}>
-          <TableCell>{session.window} hours</TableCell>
+          <TableCell>{session.window}</TableCell>
           <TableCell>{renderFormattedDate(session.startedAt)}</TableCell>
           <TableCell>{renderFormattedDate(session.endedAt)}</TableCell>
+          <TableCell>
+            {session.startedAt &&
+              session.endedAt === null &&
+              formatDistanceToNowStrict(new Date(session.startedAt))}
+            {session.startedAt && session.endedAt
+              ? formatDistanceStrict(
+                  new Date(session.startedAt),
+                  new Date(session.endedAt),
+                  {
+                    unit: "minute",
+                  },
+                )
+              : ""}
+          </TableCell>
         </TableRow>
       ))
     );
   };
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }}>
+    <TableContainer component={Paper} sx={{ maxHeight: "70svh" }}>
+      <Table>
         <TableHead>
           <TableRow>{renderTableHeadRows()}</TableRow>
         </TableHead>
