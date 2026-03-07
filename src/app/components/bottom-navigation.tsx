@@ -4,7 +4,7 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import TripOriginOutlinedIcon from "@mui/icons-material/TripOriginOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { useNavigate, useLocation } from "react-router";
-import { Paper } from "@mui/material";
+import { Paper, Skeleton } from "@mui/material";
 
 import { useAppStore } from "../../livestore";
 
@@ -33,6 +33,44 @@ export function BottomNavigation() {
         <BottomNavigationAction
           label="Me"
           icon={<AccountCircleOutlinedIcon />}
+        />
+      </MUIBottomNavigation>
+    </Paper>
+  );
+}
+
+export function BottomNavigationSkeleton() {
+  return (
+    <Paper
+      sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+      elevation={3}
+    >
+      <MUIBottomNavigation showLabels>
+        <BottomNavigationAction
+          disabled
+          label={
+            <Skeleton
+              variant="text"
+              sx={{
+                fontSize: "1rem",
+              }}
+              width={50}
+            />
+          }
+          icon={<Skeleton variant="circular" width={36} height={36} />}
+        />
+        <BottomNavigationAction
+          disabled
+          label={
+            <Skeleton
+              variant="text"
+              sx={{
+                fontSize: "1rem",
+              }}
+              width={50}
+            />
+          }
+          icon={<Skeleton variant="circular" width={36} height={36} />}
         />
       </MUIBottomNavigation>
     </Paper>

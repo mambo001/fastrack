@@ -4,16 +4,25 @@ import { StoreRegistryProvider } from "@livestore/react";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Box from "@mui/material/Box";
-
-import { BottomNavigation } from "./components";
-import { AppBar } from "./nav";
-import { Home, Profile } from "./pages";
-import { FastProvider } from "./context";
 import { ThemeProvider } from "@mui/material";
+
+import { BottomNavigation, BottomNavigationSkeleton } from "./components";
+import { AppBar } from "./nav";
+import { Home, HomeSkeleton, Profile } from "./pages";
+import { FastProvider } from "./context";
 import { appTheme } from "./theme";
 
 const errorBoundaryFallback = <div>Something went wrong</div>;
-const suspenseFallback = <div>Loading app...</div>;
+
+function AppSkeleton() {
+  return (
+    <Box sx={{ minHeight: "100svh", display: "flex", flexDirection: "column" }}>
+      <AppBar />
+      <HomeSkeleton />
+      <BottomNavigationSkeleton />
+    </Box>
+  );
+}
 
 function AppLayout() {
   return (
@@ -40,18 +49,18 @@ export function App() {
   const [storeRegistry] = useState(() => new StoreRegistry());
 
   return (
-    <ErrorBoundary fallback={errorBoundaryFallback}>
-      <Suspense fallback={suspenseFallback}>
-        <StoreRegistryProvider storeRegistry={storeRegistry}>
-          <HashRouter>
-            <FastProvider>
-              <ThemeProvider theme={appTheme}>
+    <ThemeProvider theme={appTheme}>
+      <ErrorBoundary fallback={errorBoundaryFallback}>
+        <Suspense fallback={<AppSkeleton />}>
+          <StoreRegistryProvider storeRegistry={storeRegistry}>
+            <HashRouter>
+              <FastProvider>
                 <AppInternal />
-              </ThemeProvider>
-            </FastProvider>
-          </HashRouter>
-        </StoreRegistryProvider>
-      </Suspense>
-    </ErrorBoundary>
+              </FastProvider>
+            </HashRouter>
+          </StoreRegistryProvider>
+        </Suspense>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
