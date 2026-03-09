@@ -1,10 +1,7 @@
 import process from "process";
-
-import { cloudflare } from "@cloudflare/vite-plugin";
-import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-import { livestoreDevtoolsPlugin } from "@livestore/devtools-vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -12,11 +9,7 @@ export default defineConfig(({ mode }) => ({
     fs: { strict: false },
   },
   worker: { format: "es" },
-  plugins: [
-    cloudflare(),
-    react(),
-    livestoreDevtoolsPlugin({ schemaPath: "./src/livestore/schema.ts" }),
-  ],
+  plugins: [react()],
   build: {
     outDir: "dist",
     assetsDir: "",

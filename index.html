@@ -16,7 +16,6 @@
       if (navigator.storage && navigator.storage.persist) {
         const granted = await navigator.storage.persist();
         console.log("Persistent storage granted:", granted);
-        alert(`Persistent storage granted: ${granted}`);
       }
     </script>
     <script>

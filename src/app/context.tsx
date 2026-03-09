@@ -7,15 +7,10 @@ import {
 } from "react";
 import { addMilliseconds } from "date-fns";
 
-import { FastingWindow } from "../types";
-import {
-  useAppStore,
-  events,
-  sessions$,
-  lastActiveSession$,
-} from "../livestore";
-
-const HOUR_IN_MS = 3_600_000;
+import { FastingWindow, type Session } from "../types";
+import { db } from "../dexie/db";
+import { HOUR_IN_MS } from "./contants";
+import { useLiveQuery } from "dexie-react-hooks";
 
 interface FastSession {
   id: string;
@@ -26,13 +21,6 @@ interface FastSession {
   setWindow: (window: FastingWindow) => void;
   startSession: () => void;
   endSession: () => void;
-}
-
-export interface Session {
-  readonly id: string;
-  readonly window: string;
-  readonly startedAt: Date | null;
-  readonly endedAt: Date | null;
 }
 
 interface FastContext {
@@ -55,9 +43,10 @@ const FastContext = createContext<FastContext>({
 });
 
 export function FastProvider(props: PropsWithChildren) {
-  const store = useAppStore();
-  const sessions = store.useQuery(sessions$);
-  const [lastActiveSession] = store.useQuery(lastActiveSession$);
+  const sessions = useLiveQuery(() => db.sessions.toArray()) || [];
+  const lastActiveSession = useLiveQuery(() =>
+    db.sessions.orderBy("startedAt").last(),
+  );
 
   const [selectedWindow, setSelectedWindow] = useState<FastingWindow>(
     FastingWindow.literals[0],
@@ -91,26 +80,19 @@ export function FastProvider(props: PropsWithChildren) {
     setSelectedWindow(window);
   };
 
-  const startSession = () => {
+  const startSession = async () => {
     const now = new Date();
-    const id = crypto.randomUUID();
-
-    store.commit(
-      events.sessionStarted({
-        id,
-        startedAt: now,
-        window: String(selectedWindow),
-      }),
-    );
+    const id = await db.sessions.add({
+      window: String(selectedWindow),
+      startedAt: now,
+      endedAt: null,
+    });
   };
 
-  const endSession = () => {
-    store.commit(
-      events.sessionEnded({
-        id: currentSession.id,
-        endedAt: new Date(),
-      }),
-    );
+  const endSession = async () => {
+    await db.sessions.update(currentSession.id, {
+      endedAt: new Date(),
+    });
   };
 
   return (

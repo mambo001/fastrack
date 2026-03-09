@@ -6,12 +6,14 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import { useNavigate, useLocation } from "react-router";
 import { Paper, Skeleton } from "@mui/material";
 
-import { useAppStore } from "../../livestore";
+// import { useAppStore } from "../../livestore";
 
 export function BottomNavigation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { clientId } = useAppStore();
+  // const { clientId } = useAppStore();
+  // TODO: get clientId from context instead of app store
+  const clientId = "123";
 
   const value = pathname === "/" ? 0 : 1;
 
