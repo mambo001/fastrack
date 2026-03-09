@@ -35,7 +35,7 @@
     "dev": "vite --force",
     "preview": "vite preview",
     "test": "playwright test",
-    "deploy:gh-pages": "git subtree push --prefix dist/client https://github.com/mambo001/fastrack gh-pages",
+    "deploy:gh-pages": "git subtree push --prefix dist https://github.com/mambo001/fastrack gh-pages",
     "rebuild:gh-pages": "bun run build && git add . && git commit -m 'rebuild gh pages' && bun run deploy:gh-pages"
   }
 }
