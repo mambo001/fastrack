@@ -1,11 +1,8 @@
-import { Card, CardContent, Container, Stack, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 
-import { sessions$, useAppStore } from "../../../livestore";
 import { FastingSessionsTable } from "./table";
 
 export function Profile() {
-  const store = useAppStore();
-  const sessions = store.useQuery(sessions$);
   return (
     <Container
       sx={{
