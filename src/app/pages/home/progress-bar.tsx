@@ -7,7 +7,8 @@ import Box from "@mui/material/Box";
 import { Stack } from "@mui/material";
 import { formatDistance } from "date-fns";
 
-import { useFastContext, type Session } from "../../context";
+import { useFastContext } from "../../context";
+import type { Session } from "../../../types";
 
 function toPercent(timeLeft: number, window: number) {
   return Math.floor((timeLeft / (window * 3600)) * 100);
@@ -53,7 +54,7 @@ export function CircularWithValueLabel() {
 
   return (
     <CircularProgressWithLabel
-      value={progressValue}
+      value={Math.abs(progressValue)}
       label={
         isActive ? (
           <Countdown timeLeft={timeLeft} window={window} />
