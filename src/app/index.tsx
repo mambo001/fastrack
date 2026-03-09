@@ -1,6 +1,4 @@
 import { HashRouter, Outlet, Route, Routes } from "react-router";
-import { StoreRegistry } from "@livestore/livestore";
-import { StoreRegistryProvider } from "@livestore/react";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Box from "@mui/material/Box";
@@ -46,19 +44,15 @@ export function AppInternal() {
 }
 
 export function App() {
-  const [storeRegistry] = useState(() => new StoreRegistry());
-
   return (
     <ThemeProvider theme={appTheme}>
       <ErrorBoundary fallback={errorBoundaryFallback}>
         <Suspense fallback={<AppSkeleton />}>
-          <StoreRegistryProvider storeRegistry={storeRegistry}>
-            <HashRouter>
-              <FastProvider>
-                <AppInternal />
-              </FastProvider>
-            </HashRouter>
-          </StoreRegistryProvider>
+          <HashRouter>
+            <FastProvider>
+              <AppInternal />
+            </FastProvider>
+          </HashRouter>
         </Suspense>
       </ErrorBoundary>
     </ThemeProvider>

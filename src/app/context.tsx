@@ -8,12 +8,6 @@ import {
 import { addMilliseconds } from "date-fns";
 
 import { FastingWindow } from "../types";
-import {
-  useAppStore,
-  events,
-  sessions$,
-  lastActiveSession$,
-} from "../livestore";
 
 const HOUR_IN_MS = 3_600_000;
 
@@ -55,9 +49,9 @@ const FastContext = createContext<FastContext>({
 });
 
 export function FastProvider(props: PropsWithChildren) {
-  const store = useAppStore();
-  const sessions = store.useQuery(sessions$);
-  const [lastActiveSession] = store.useQuery(lastActiveSession$);
+  // const store = useAppStore();
+  // const sessions = store.useQuery(sessions$);
+  // const [lastActiveSession] = store.useQuery(lastActiveSession$);
 
   const [selectedWindow, setSelectedWindow] = useState<FastingWindow>(
     FastingWindow.literals[0],
