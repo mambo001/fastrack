@@ -9,13 +9,11 @@
     "@fontsource/roboto": "^5.2.10",
     "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.8",
-    "@overengineering/fps-meter": "0.2.4",
     "date-fns": "^4.1.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-error-boundary": "6.0.0",
-    "react-router": "^7.13.1",
-    "todomvc-app-css": "2.4.3"
+    "react-router": "^7.13.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
@@ -31,7 +29,6 @@
   },
   "scripts": {
     "build": "vite build",
-    "deploy": "pnpm run build && bunx wrangler deploy",
     "dev": "vite --force",
     "preview": "vite preview",
     "test": "playwright test",
