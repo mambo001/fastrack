@@ -12,6 +12,14 @@ import {
 } from "date-fns";
 
 import { useFastContext } from "../../context";
+import type { Session } from "../../../types";
+
+export const sessionFields = [
+  "id",
+  "window",
+  "startedAt",
+  "endedAt",
+] as const satisfies ReadonlyArray<keyof Session>;
 
 const renderFormattedDate = (date: Date | null) => {
   return date ? format(new Date(date), "MMM, dd HH:mm aa") : "";
@@ -27,13 +35,12 @@ export function FastingSessionsTable() {
   const renderTableHeadRows = () => {
     if (sessions.length === 0) return null;
 
-    const [_, ...remainingKeys] = Object.keys(sessions[0]!);
+    const [_, ...remainingKeys] = sessionFields;
     return remainingKeys
       .map((key) => {
         if (key === "window")
           return (
             <TableCell size="small" key={key}>
-              {/* {camelCaseToTitleCase(key)}(hrs) */}
               Goal(hrs)
             </TableCell>
           );

@@ -6,9 +6,10 @@ export type Filter = typeof Filter.Type;
 export const FastingWindow = Schema.Literal(16, 18, 20, 24, 36, 48, 72);
 export type FastingWindow = typeof FastingWindow.Type;
 
-export interface Session {
-  readonly id: string;
-  readonly window: string;
-  readonly startedAt: Date | null;
-  readonly endedAt: Date | null;
-}
+export const Session = Schema.Struct({
+  id: Schema.String,
+  window: Schema.String,
+  startedAt: Schema.NullOr(Schema.Date),
+  endedAt: Schema.NullOr(Schema.Date),
+});
+export type Session = typeof Session.Type;
