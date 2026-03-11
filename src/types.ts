@@ -11,5 +11,6 @@ export const Session = Schema.Struct({
   window: Schema.String,
   startedAt: Schema.NullOr(Schema.Date),
   endedAt: Schema.NullOr(Schema.Date),
+  isArchived: Schema.Boolean,
 });
-export type Session = typeof Session.Type;
+export type Session = Schema.Schema.Type<typeof Session>;

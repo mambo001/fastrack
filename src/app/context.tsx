@@ -43,7 +43,10 @@ const FastContext = createContext<FastContext>({
 });
 
 export function FastProvider(props: PropsWithChildren) {
-  const sessions = useLiveQuery(() => db.sessions.toArray()) || [];
+  const sessions =
+    useLiveQuery(() =>
+      db.sessions.filter((session) => session.isArchived === false).toArray(),
+    ) || [];
   const lastActiveSession = useLiveQuery(() =>
     db.sessions.orderBy("startedAt").last(),
   );
@@ -86,6 +89,7 @@ export function FastProvider(props: PropsWithChildren) {
       window: String(selectedWindow),
       startedAt: now,
       endedAt: null,
+      isArchived: false,
     });
   };
 
