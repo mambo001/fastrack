@@ -12,8 +12,8 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   build: {
     outDir: "dist",
-    assetsDir: "",
+    assetsDir: "assets",
   },
-  // base: "/fastrack/",
+  // base: "/fastrack/",;
   base: mode === "development" ? "/" : "/fastrack/",
 }));
