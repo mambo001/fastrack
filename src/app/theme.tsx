@@ -26,14 +26,18 @@ export const appTheme = createTheme({
     },
     dark: {
       palette: {
-        primary: {
-          main: "#006A71ff",
+        background: {
+          default: "#0d1e1e",
+          paper: "#132b2c",
         },
-        secondary: {
+        primary: {
           main: "#48A6A7ff",
         },
-        info: {
+        secondary: {
           main: "#9ACBD0ff",
+        },
+        info: {
+          main: "#006A71ff",
         },
         error: {
           main: "#bc4749ff",
