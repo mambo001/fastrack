@@ -6,11 +6,11 @@ import {
   type PropsWithChildren,
 } from "react";
 import { addMilliseconds } from "date-fns";
+import { useLiveQuery } from "dexie-react-hooks";
 
 import { FastingWindow, type Session } from "../types";
 import { db } from "../dexie/db";
 import { HOUR_IN_MS } from "./contants";
-import { useLiveQuery } from "dexie-react-hooks";
 
 interface FastSession {
   id: string;

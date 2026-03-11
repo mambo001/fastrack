@@ -3,23 +3,46 @@ import MUIBottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import TripOriginOutlinedIcon from "@mui/icons-material/TripOriginOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { useNavigate, useLocation } from "react-router";
 import { Paper, Skeleton } from "@mui/material";
 
-// import { useAppStore } from "../../livestore";
+const NAV_ITEMS = [
+  { label: "Today", path: "/", icon: <TripOriginOutlinedIcon />, show: true },
+  {
+    label: "Me",
+    path: "/profile",
+    icon: <AccountCircleOutlinedIcon />,
+    show: true,
+  },
+  {
+    label: "Settings",
+    path: "/settings",
+    icon: <SettingsOutlinedIcon />,
+    show: false,
+  },
+] as const;
+
+function getNavIndex(pathname: string): number {
+  const index = NAV_ITEMS.findIndex((item) =>
+    item.path === "/" ? pathname === "/" : pathname.startsWith(item.path),
+  );
+  return index === -1 ? 0 : index;
+}
 
 export function BottomNavigation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  // const { clientId } = useAppStore();
   // TODO: get clientId from context instead of app store
   const clientId = "123";
 
-  const value = pathname === "/" ? 0 : 1;
+  const value = getNavIndex(pathname);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-    if (newValue === 0) navigate("/");
-    if (newValue === 1) navigate(`/profile/${clientId}`);
+    const item = NAV_ITEMS[newValue];
+    if (!item) return;
+    const path = item.path === "/profile" ? `/profile/${clientId}` : item.path;
+    navigate(path);
   };
 
   return (
@@ -28,14 +51,16 @@ export function BottomNavigation() {
       elevation={3}
     >
       <MUIBottomNavigation showLabels value={value} onChange={handleChange}>
-        <BottomNavigationAction
-          label="Today"
-          icon={<TripOriginOutlinedIcon />}
-        />
-        <BottomNavigationAction
-          label="Me"
-          icon={<AccountCircleOutlinedIcon />}
-        />
+        {NAV_ITEMS.map((item) => (
+          <BottomNavigationAction
+            key={item.path}
+            label={item.label}
+            icon={item.icon}
+            sx={{
+              display: item.show ? "flex" : "none",
+            }}
+          />
+        ))}
       </MUIBottomNavigation>
     </Paper>
   );
@@ -48,32 +73,16 @@ export function BottomNavigationSkeleton() {
       elevation={3}
     >
       <MUIBottomNavigation showLabels>
-        <BottomNavigationAction
-          disabled
-          label={
-            <Skeleton
-              variant="text"
-              sx={{
-                fontSize: "1rem",
-              }}
-              width={50}
-            />
-          }
-          icon={<Skeleton variant="circular" width={36} height={36} />}
-        />
-        <BottomNavigationAction
-          disabled
-          label={
-            <Skeleton
-              variant="text"
-              sx={{
-                fontSize: "1rem",
-              }}
-              width={50}
-            />
-          }
-          icon={<Skeleton variant="circular" width={36} height={36} />}
-        />
+        {NAV_ITEMS.map((item) => (
+          <BottomNavigationAction
+            key={item.path}
+            disabled
+            label={
+              <Skeleton variant="text" sx={{ fontSize: "1rem" }} width={50} />
+            }
+            icon={<Skeleton variant="circular" width={36} height={36} />}
+          />
+        ))}
       </MUIBottomNavigation>
     </Paper>
   );

@@ -6,7 +6,7 @@ import { ThemeProvider } from "@mui/material";
 
 import { BottomNavigation, BottomNavigationSkeleton } from "./components";
 import { AppBar } from "./nav";
-import { Home, HomeSkeleton, Profile } from "./pages";
+import { Home, HomeSkeleton, Profile, Settings } from "./pages";
 import { FastProvider } from "./context";
 import { appTheme } from "./theme";
 
@@ -38,6 +38,7 @@ export function AppInternal() {
       <Route element={<AppLayout />}>
         <Route index element={<Home />} />
         <Route path="/profile/:profileId" element={<Profile />} />
+        <Route path="/settings/" element={<Settings />} />
       </Route>
     </Routes>
   );

@@ -76,7 +76,7 @@ export function FastingSessionsTable() {
     );
   };
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: "70svh" }}>
+    <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: "70svh" }}>
       <Table>
         <TableHead>
           <TableRow>{renderTableHeadRows()}</TableRow>

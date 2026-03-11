@@ -7,7 +7,10 @@ import {
   useScrollTrigger,
   Container,
   Slide,
+  IconButton,
 } from "@mui/material";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { useNavigate } from "react-router";
 
 interface Props {
   window?: () => Window;
@@ -28,16 +31,30 @@ function HideOnScroll(props: Props) {
 }
 
 export function AppBar(props: React.PropsWithChildren) {
+  const navigate = useNavigate();
+
+  const handleSettingsClick = () => {
+    navigate("/settings");
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
       <HideOnScroll {...props}>
         <MUIAppBar>
           <Toolbar variant="dense">
-            {/* <Toolbar> */}
-            <Typography variant="h6" component="div">
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                flexGrow: 1,
+              }}
+            >
               fastrack
             </Typography>
+            <IconButton onClick={handleSettingsClick} color="inherit">
+              <SettingsOutlinedIcon />
+            </IconButton>
           </Toolbar>
         </MUIAppBar>
       </HideOnScroll>
