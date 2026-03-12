@@ -22,7 +22,7 @@ function endDateFromWindow(date: Date | null, window: number) {
 }
 
 function formatNullableDate(date: Date | null) {
-  return date ? format(date, "E, HH:mm a") : "";
+  return date ? format(date, "E, h:mm a") : "";
 }
 
 export function Home() {
