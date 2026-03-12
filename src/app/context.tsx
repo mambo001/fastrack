@@ -48,7 +48,7 @@ export function FastProvider(props: PropsWithChildren) {
       db.sessions.filter((session) => session.isArchived === false).toArray(),
     ) || [];
   const lastActiveSession = useLiveQuery(() =>
-    db.sessions.orderBy("startedAt").last(),
+    db.sessions.filter((session) => session.endedAt === null).first(),
   );
 
   const [selectedWindow, setSelectedWindow] = useState<FastingWindow>(
@@ -66,7 +66,12 @@ export function FastProvider(props: PropsWithChildren) {
       };
     }
 
-    const window = Number(lastActiveSession.window) as FastingWindow;
+    const parsedWindow = Number(lastActiveSession.window);
+    const window = (
+      Number.isFinite(parsedWindow) && parsedWindow > 0
+        ? parsedWindow
+        : selectedWindow
+    ) as FastingWindow;
     const start = new Date(lastActiveSession.startedAt);
     const end = addMilliseconds(start, window * HOUR_IN_MS);
 
