@@ -34,7 +34,7 @@ export function BottomNavigation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   // TODO: get clientId from context instead of app store
-  const clientId = "123";
+  const clientId = "me";
 
   const value = getNavIndex(pathname);
 
