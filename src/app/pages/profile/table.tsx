@@ -28,7 +28,7 @@ export const sessionFields = [
 ] as const satisfies ReadonlyArray<keyof Session>;
 
 const renderFormattedDate = (date: Date | null) => {
-  return date ? format(new Date(date), "MMM, dd HH:mm aa") : "";
+  return date ? format(new Date(date), "MMM, dd h:mm aa") : "";
 };
 
 const camelCaseToTitleCase = (str: string) => {
@@ -57,8 +57,14 @@ export function FastingSessionsTable() {
       .map((key) => {
         if (key === "window")
           return (
-            <TableCell size="small" key={key}>
-              Goal(hrs)
+            <TableCell
+              sx={{
+                maxWidth: 55,
+              }}
+              size="small"
+              key={key}
+            >
+              Goal
             </TableCell>
           );
 
@@ -86,9 +92,6 @@ export function FastingSessionsTable() {
               ? formatDistanceStrict(
                   new Date(session.startedAt),
                   new Date(session.endedAt),
-                  {
-                    unit: "minute",
-                  },
                 )
               : ""}
           </TableCell>
